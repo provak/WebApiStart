@@ -1,11 +1,10 @@
-using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Mvc;
 
 public class ContactManagementController : BaseController
 {
-  private ContactsStorage storage;
+  private IStorage storage;
 
-  public ContactManagementController(ContactsStorage storage)
+  public ContactManagementController(IStorage storage)
   {
     this.storage = storage;
   }
@@ -13,18 +12,20 @@ public class ContactManagementController : BaseController
   [HttpPost("contacts")]
   public IActionResult Add([FromBody] Contact contact)
   {
-    if (storage.Add(contact))
+    Contact result = storage.Add(contact);
+
+    if (contact == null)
     {
-      return Created();
+      return Conflict("Контакт с указанным Id существует.");
     }
 
-    return Conflict("Контакт с указанным Id существует.");
+    return Ok(result);
   }
 
   [HttpGet("contacts")]
   public ActionResult<List<Contact>> GetContacts()
   {
-    return Ok(storage.GetAll());
+    return Ok(storage.GetContacts());
   }
 
   [HttpGet("contacts/{id}")]
@@ -35,10 +36,11 @@ public class ContactManagementController : BaseController
 
     if (result == 0)
     {
-      return BadRequest("Неверный формат ID или не соответствие ожидаемым критериям (например, не числовое значение или некорректные символы).");
+      return BadRequest("Неверный формат ID или не соответствие ожидаемым критериям " +
+        "(например, не числовое значение или некорректные символы).");
     }
 
-    var contact = storage.FindContact(result);
+    var contact = storage.FindContactById(result);
 
     if (contact == null)
     {

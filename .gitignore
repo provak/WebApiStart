@@ -3,8 +3,11 @@
 ##
 ## Get latest from `dotnet new gitignore`
 
+contacts.db
+
 # dotenv files
 .env
+client2/*
 
 # User-specific files
 *.rsuser
@@ -64,6 +67,8 @@ BenchmarkDotNet.Artifacts/
 project.lock.json
 project.fragment.lock.json
 artifacts/
+appsettings.Development.json
+appsettings.json
 
 # Tye
 .tye/

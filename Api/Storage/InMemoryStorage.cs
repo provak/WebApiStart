@@ -1,8 +1,8 @@
-public class ContactsStorage
+public class InMemoryStorage : IStorage
 {
   private List<Contact> Contacts { get; set; }
 
-  public ContactsStorage()
+  public InMemoryStorage()
   {
     Contacts = new List<Contact>();
 
@@ -17,24 +17,24 @@ public class ContactsStorage
     }
   }
 
-  public List<Contact> GetAll()
+  public List<Contact> GetContacts()
   {
     return Contacts;
   }
 
-  public bool Add(Contact contact)
+  public Contact Add(Contact contact)
   {
-    if (FindContact(contact.Id) == null)
+    if (FindContactById(contact.Id) == null)
     {
       Contacts.Add(contact);
-      return true;
+      return contact;
     }
-    return false;
+    return null;
   }
 
   public bool Remove(int id)
   {
-    var contact = FindContact(id);
+    var contact = FindContactById(id);
     if (contact != null)
     {
       Contacts.Remove(contact);
@@ -45,7 +45,7 @@ public class ContactsStorage
 
   public bool Update(ContactDto contactDto, int id)
   {
-    var contact = FindContact(id);
+    var contact = FindContactById(id);
     if (contact != null)
     {
       if (!String.IsNullOrEmpty(contact.Name))
@@ -61,7 +61,7 @@ public class ContactsStorage
     return false;
   }
 
-  public Contact FindContact(int id)
+  public Contact FindContactById(int id)
   {
     return Contacts.FirstOrDefault(c => c.Id == id);
   }
